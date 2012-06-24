@@ -1,0 +1,11 @@
+Primary Authors:
+
+    * Jacek Tomaszewski <https://github.com/zlorf/>
+    * Zach Mathew <https://github.com/zmathew/>
+        - author of the django-linguo (https://github.com/zmathew/django-linguo),
+        where the MultilingualManager is taken from
+
+Thanks To (django-linguo):
+
+    * Trapeze Media (http://www.trapeze.com) and all the amazing developers who supported this project.
+    * Selwin Ong <https://github.com/selwin> for a couple of contributions.
