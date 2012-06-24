@@ -3,7 +3,8 @@ django-modeltranslation-wrapper
 ===============================
 
 This package is a bunch of patches for ``django-modeltranslation``
-(http://code.google.com/p/django-modeltranslation/),
+(http://code.google.com/p/django-modeltranslation/,
+http://pypi.python.org/pypi/django-modeltranslation/),
 which can enhance usage of this nice app and target some annoying aspects.
 
 Two features were added:
@@ -13,7 +14,8 @@ Two features were added:
 * intelligent manager: filtering, ordering, creating and so on takes current language into
   consideration
 
-    (This feature was mainly ported from ``django-linguo`` (https://github.com/zmathew/django-linguo),
+    (This feature was mainly ported from ``django-linguo`` (https://github.com/zmathew/django-linguo,
+    http://pypi.python.org/pypi/django-linguo),
     another good app. However, ``modeltranslation`` idea of `translation fields` registration is
     better than ``linguo`` model code edition - especially with 3rd-party apps)
 
