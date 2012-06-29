@@ -15,24 +15,26 @@ from modeltranslation_wrapper.tests.settings import SETTINGS
 class MyTestCase(TestCase):
     cache = AppCache()
 
-    def clear_cache(self):
+    @classmethod
+    def clear_cache(cls):
         """
         It is necessary to clear cache - otherwise model reloading won't
         recreate models, but just use old ones.
         """
-        self.cache.app_store = SortedDict()
-        self.cache.app_models = SortedDict()
-        self.cache.app_errors = {}
-        self.cache.handled = {}
-        self.cache.loaded = False
+        cls.cache.app_store = SortedDict()
+        cls.cache.app_models = SortedDict()
+        cls.cache.app_errors = {}
+        cls.cache.handled = {}
+        cls.cache.loaded = False
 
-    def reset_cache(self):
+    @classmethod
+    def reset_cache(cls):
         """
         Rebuild whole cache, import all models again
         """
-        self.clear_cache()
-        self.cache._populate()
-        for m in self.cache.get_apps():
+        cls.clear_cache()
+        cls.cache._populate()
+        for m in cls.cache.get_apps():
             reload(m)
 
     @classmethod
@@ -123,26 +125,25 @@ class TestAutodiscover(MyTestCase):
 
 
 class TestManager(MyTestCase):
-    synced = False
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         """
         Prepare database:
+            * Include project translation (for Other model)
             * Autodiscover
             * Call syncdb to create tables for test_app.models (since during
               default testrunner's db creation test_app was not in INSTALLED_APPS
-
-        This must be run only once.
         """
-        if not self.__class__.synced:
-            sync_over = override_settings(MODELTRANSLATION_TRANSLATION_FILES=
-                                          ('modeltranslation_wrapper.tests.project_translation',))
-            with sync_over:
-                self.reset_cache()
-                autodiscover()
-                from django.db import connections, DEFAULT_DB_ALIAS
-                connections[DEFAULT_DB_ALIAS].creation.create_test_db(0, autoclobber=True)
-                self.__class__.synced = True
+        super(TestManager, cls).setUpClass()
+        sync_settings = SETTINGS.copy()
+        sync_settings['MODELTRANSLATION_TRANSLATION_FILES'] = \
+            ('modeltranslation_wrapper.tests.project_translation',)
+        with override_settings(**sync_settings):
+            cls.reset_cache()
+            autodiscover()
+            from django.db import connections, DEFAULT_DB_ALIAS
+            connections[DEFAULT_DB_ALIAS].creation.create_test_db(0, autoclobber=True)
 
     def test_settings(self):
         """Test if settings are correct and everything loaded fine."""
