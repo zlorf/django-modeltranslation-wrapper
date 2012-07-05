@@ -34,7 +34,7 @@ just one file per project. `Wrapper` makes it more like in the ``admin``: every 
 
 Moreover, if you still want to include some non-app translations (e.g. translation for 3rd-party apps),
 there is new setting introduced: ``MODELTRANSLATION_TRANSLATION_FILES``. It should contain list of
-additional modules with translations to import.
+additional modules (containing translations) to import.
 
 So, when using `Wrapper`, the ``MODELTRANSLATION_TRANSLATION_REGISTRY`` setting is unnecessary.
 
@@ -88,7 +88,7 @@ It will result in ``foo_pl == 'nic'`` and other ``foo_?? == '-- no translation y
 
 There is more convenient way than passing ``_populate`` all the time:
 ``MODELTRANSLATION_AUTO_POPULATE`` setting. If ``_populate`` parameter is missing, ``create()`` will
-look at the settings to determine if population should be used.
+look at the setting to determine if population should be used.
 
 This useful feature is disabled by default for backward compatibility with `MT` tests.
 However, if your code doesn't heavily rely on the fact that ``create()`` set None on suffixed fields,
@@ -134,7 +134,7 @@ Installation
         'myproject.foo_translation',
     )
 
-    These modules will be imported in addition to autodiscovered ones.
+   These modules will be imported in addition to autodiscovered ones.
 
 #. Optionally, specify ``MODELTRANSLATION_AUTO_POPULATE`` (see above)::
 
