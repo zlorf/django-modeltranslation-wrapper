@@ -147,4 +147,4 @@ Installation
           Zach Mathew (of ``django-linguo``)
 
           For details see AUTHORS file.
-:Version: 1.0 of 23/06/2012
+:Version: 1.1 of 04/09/2012
