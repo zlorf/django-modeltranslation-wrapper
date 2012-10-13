@@ -83,6 +83,7 @@ class MultilingualQuerySet(models.query.QuerySet):
                     ordering.append(rewrite_lookup_key(self.model, key))
                 self.query.add_ordering(*ordering)
 
+    # This method was not present in django-linguo
     def _rewrite_q(self, q):
         "Rewrite field names inside Q/F call."
         if isinstance(q, tuple) and len(q) == 2:
