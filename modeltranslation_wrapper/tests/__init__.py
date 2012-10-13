@@ -117,11 +117,34 @@ class TestAutodiscover(MyTestCase):
     def test_backward_compatibility(self):
         """Check if typical modeltranslation configuration is handled properly."""
         self.clear_cache()
+        # Registry changed - need to reload to recreate wrapper configuration
         from modeltranslation_wrapper import models
-        reload(models)  # Registry changed - need to reload to recreate wrapper configuration
+        import modeltranslation
+        reload(models)
+        reload(modeltranslation.settings)
+        reload(modeltranslation)
         autodiscover()
         self.check_news()
         self.check_other()
+
+    def test_manager_in_04(self):
+        """
+        Check if using modeltranslation 0.4 MultilingualManager is present.
+
+        Modeltranslation 0.4 changed the order of imports and autodiscover
+        takes place before wrapper.models are imported - that's it, before
+        MultilingualManager patch is enforced. This test shows whether fix
+        in TranslatorWithManager.__init__ works.
+        """
+        from modeltranslation_wrapper import models
+        import modeltranslation
+        reload(modeltranslation.translator)
+        reload(modeltranslation)
+        reload(models)
+        autodiscover()
+        from test_app.models import News
+        from modeltranslation_wrapper.manager import MultilingualManager
+        self.assertTrue(isinstance(News.objects, MultilingualManager))
 
 
 class TestManager(MyTestCase):

@@ -5,7 +5,7 @@ setup(
     name='django-modeltranslation-wrapper',
     description='Wrapper around modeltranslation package, adding nice features.',
     long_description=open('README.rst').read(),
-    version='1.1',
+    version='1.2',
     author='Jacek Tomaszewski',
     author_email='jacek.tomek@gmail.com',
     url='https://github.com/zlorf/django-modeltranslation-wrapper',

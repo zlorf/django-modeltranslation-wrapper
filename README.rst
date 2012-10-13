@@ -11,6 +11,10 @@ Two features were added:
 
 * autodiscover of ``translation.py`` files within apps
 
+    ``modeltranslation-0.4`` already has this feature (ported from this app :P), so it is no more
+    needed here and is only left for use with older versions of ``modeltranslation``.
+    Thus, the autodiscover is deactivated if the 0.4 version of ``modeltranslation`` is detected.
+
 * intelligent manager: filtering, ordering, creating and so on takes current language into
   consideration
 
@@ -142,9 +146,20 @@ Installation
 
 ----------
 
+Changelog
+=========
+
+**1.2** (23/09/2012)
+    Refactor code to work with modeltranslation-0.4
+
+**1.1** (04/09/2012)
+    Added testrunner
+
+**1.0** (24/06/2012)
+    Initial code
+
 :Authors: Jacek Tomaszewski
 
           Zach Mathew (of ``django-linguo``)
 
           For details see AUTHORS file.
-:Version: 1.1 of 04/09/2012
