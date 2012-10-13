@@ -1,51 +1,16 @@
 from django.conf import settings
-from django.db.models.base import ModelBase
-from django.db.models import Manager
 
 try:
     from modeltranslation import autodiscover
+    # direct patch will not be possible.
+    # one need to set 'modeltranslation_wrapper.patch' at end of MODELTRANSLATION_TRANSLATION_FILES
 except ImportError:
     # modeltranslation < 0.4, so use the translation autodiscover
-    settings.MODELTRANSLATION_TRANSLATION_FILES = tuple(
+    settings.MODELTRANSLATION_TRANSLATION_FILES = list(
         getattr(settings, 'MODELTRANSLATION_TRANSLATION_FILES', ()))
     if getattr(settings, 'MODELTRANSLATION_TRANSLATION_REGISTRY', None):
-        settings.MODELTRANSLATION_TRANSLATION_FILES += (settings.MODELTRANSLATION_TRANSLATION_REGISTRY,)
+        settings.MODELTRANSLATION_TRANSLATION_FILES.append(settings.MODELTRANSLATION_TRANSLATION_REGISTRY)
+    if 'modeltranslation_wrapper.patch' in settings.MODELTRANSLATION_TRANSLATION_FILES:
+        settings.MODELTRANSLATION_TRANSLATION_FILES.remove('modeltranslation_wrapper.patch')
+    settings.MODELTRANSLATION_TRANSLATION_FILES.append('modeltranslation_wrapper.patch')
     settings.MODELTRANSLATION_TRANSLATION_REGISTRY = 'modeltranslation_wrapper.translation_autodiscover'
-
-
-# Patch Manager
-from modeltranslation import translator
-
-
-class TranslatorWithManager(translator.Translator):
-    """Patches registered objects to have MultilingualManager"""
-
-    def __init__(self, prev_registry=None):
-        super(TranslatorWithManager, self).__init__()
-        if prev_registry is not None:
-            self._registry = prev_registry
-            for model in self._registry.iterkeys():
-                self._add_manager(model)
-
-    def _add_manager(self, model):
-        if not hasattr(model, 'objects'):
-            return
-        from modeltranslation_wrapper.manager import MultilingualManager
-        current_manager = model.objects
-        if isinstance(current_manager, MultilingualManager):
-            return
-        if current_manager.__class__ is Manager:
-            current_manager.__class__ = MultilingualManager
-        else:
-            class NewMultilingualManager(current_manager.__class__, MultilingualManager):
-                pass
-            current_manager.__class__ = NewMultilingualManager
-
-    def register(self, model_or_iterable, translation_opts, **options):
-        super(TranslatorWithManager, self).register(model_or_iterable, translation_opts, **options)
-        if isinstance(model_or_iterable, ModelBase):
-            model_or_iterable = [model_or_iterable]
-        for model in model_or_iterable:
-            self._add_manager(model)
-
-translator.translator = TranslatorWithManager(translator.translator._registry)

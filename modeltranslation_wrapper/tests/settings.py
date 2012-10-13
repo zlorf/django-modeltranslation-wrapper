@@ -12,7 +12,7 @@ SETTINGS = {
         'modeltranslation',
     ),
     'XYZ': 'abc',
-    'MODELTRANSLATION_TRANSLATION_FILES': (),
+    'MODELTRANSLATION_TRANSLATION_FILES': ('modeltranslation_wrapper.patch',), # for 0.4, see README
     'MODELTRANSLATION_TRANSLATION_REGISTRY': '',
     'MODELTRANSLATION_AUTO_POPULATE': False,
 }

@@ -142,6 +142,8 @@ class TestAutodiscover(MyTestCase):
         reload(modeltranslation.translator)
         reload(modeltranslation)
         reload(models)
+        import sys
+        sys.modules.pop('modeltranslation_wrapper.patch', None)
         autodiscover()
         from test_app.models import News
         from modeltranslation_wrapper.manager import MultilingualManager
@@ -162,9 +164,11 @@ class TestManager(MyTestCase):
         super(TestManager, cls).setUpClass()
         sync_settings = SETTINGS.copy()
         sync_settings['MODELTRANSLATION_TRANSLATION_FILES'] = \
-            ('modeltranslation_wrapper.tests.project_translation',)
+            ('modeltranslation_wrapper.tests.project_translation','modeltranslation_wrapper.patch')
         with override_settings(**sync_settings):
             cls.reset_cache()
+            import sys
+            sys.modules.pop('modeltranslation_wrapper.patch', None)
             autodiscover()
             from django.db import connections, DEFAULT_DB_ALIAS
             connections[DEFAULT_DB_ALIAS].creation.create_test_db(0, autoclobber=True)
