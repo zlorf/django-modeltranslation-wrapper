@@ -1,7 +1,7 @@
 from copy import copy
 
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, F
 from django.db.models.loading import AppCache
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -239,6 +239,28 @@ class TestManager(MyTestCase):
         finally:
             deactivate()
 
+    def test_f(self):
+        """Test if F queries are rewritten."""
+        from test_app.models import News
+        n = News.objects.create(title_en=1, title_pl=2)
+
+        self.assertEqual('en', get_language()[:2])
+
+        # Adding strings doesn't work - we will add string numbers instead.
+        # Although it is silly, it seems to works (sqlite, MySQL)
+        News.objects.update(title=F('title')+10)
+        n = News.objects.all()[0]
+        self.assertEqual(n.title_en, '11')
+        self.assertEqual(n.title_pl, '2')
+
+        activate('pl')
+        try:
+            News.objects.update(title=F('title')+20)
+            n = News.objects.all()[0]
+            self.assertEqual(n.title_en, '11')
+            self.assertEqual(n.title_pl, '22')
+        finally:
+            deactivate()
 
     def test_custom_manager(self):
         """Test if user-defined manager is still working"""
