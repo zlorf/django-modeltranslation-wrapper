@@ -1,6 +1,7 @@
 from copy import copy
 
 from django.db import models
+from django.db.models import Q
 from django.db.models.loading import AppCache
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -217,6 +218,27 @@ class TestManager(MyTestCase):
             self.assertEqual('new', m.title_pl)
         finally:
             deactivate()
+
+    def test_q(self):
+        """Test if Q queries are rewritten."""
+        from test_app.models import News
+        n = News.objects.create(title='')
+        n.title_en = 'en'
+        n.title_pl = 'pl'
+        n.save()
+
+        self.assertEqual('en', get_language()[:2])
+
+        self.assertEqual(0, News.objects.filter(Q(title='pl') | Q(pk=42)).count())
+        self.assertEqual(1, News.objects.filter(Q(title='en') | Q(pk=42)).count())
+
+        activate('pl')
+        try:
+            self.assertEqual(1, News.objects.filter(Q(title='pl') | Q(pk=42)).count())
+            self.assertEqual(0, News.objects.filter(Q(title='en') | Q(pk=42)).count())
+        finally:
+            deactivate()
+
 
     def test_custom_manager(self):
         """Test if user-defined manager is still working"""

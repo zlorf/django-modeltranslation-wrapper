@@ -8,6 +8,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.fields.related import RelatedField
 from django.utils.translation import get_language
+from django.utils.tree import Node
 
 from modeltranslation import translator
 
@@ -82,7 +83,16 @@ class MultilingualQuerySet(models.query.QuerySet):
                     ordering.append(rewrite_lookup_key(self.model, key))
                 self.query.add_ordering(*ordering)
 
+    def _rewrite_q(self, q):
+        "Rewrite field names inside Q call."
+        if isinstance(q, tuple) and len(q) == 2:
+            return (rewrite_lookup_key(self.model, q[0]), q[1])
+        if isinstance(q, Node):
+            q.children = map(self._rewrite_q, q.children)
+        return q
+
     def _filter_or_exclude(self, negate, *args, **kwargs):
+        args = map(self._rewrite_q, args)
         for key, val in kwargs.items():
             new_key = rewrite_lookup_key(self.model, key)
             del kwargs[key]
