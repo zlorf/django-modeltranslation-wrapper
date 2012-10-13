@@ -140,6 +140,18 @@ Installation
 
    These modules will be imported in addition to autodiscovered ones.
 
+#. If you are using `MT` in version 0.4 or newer, unfortunatelly you must also add
+   ``'modeltranslation_wrapper.patch'`` as last entry in ``MODELTRANSLATION_TRANSLATION_FILES``
+   to enable inteligent manager::
+
+    MODELTRANSLATION_TRANSLATION_FILES = (
+        'myproject.flatpages_translation',
+        'myproject.foo_translation',
+        'modeltranslation_wrapper.patch',
+    )
+
+   This is caused by change in the way `MT` 0.4 loads translations.
+
 #. Optionally, specify ``MODELTRANSLATION_AUTO_POPULATE`` (see above)::
 
     MODELTRANSLATION_AUTO_POPULATE = True
@@ -149,8 +161,9 @@ Installation
 Changelog
 =========
 
-**1.2** (23/09/2012)
-    Refactor code to work with modeltranslation-0.4
+**1.2.1** (23/09/2012)
+    - Refactor code to work with modeltranslation-0.4
+    - Update MultilingualManager to rewrite Q nad F queries
 
 **1.1** (04/09/2012)
     Added testrunner
