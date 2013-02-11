@@ -2,6 +2,12 @@
 django-modeltranslation-wrapper
 ===============================
 
+.. attention::
+    ``modeltranslation-0.5`` has incorporated all features from this app
+    (moreover, intelligent manager has been improved), so instead of using this app, please update
+    your ``modeltranslation`` version. However, this app is still provided for those who
+    (for some dark reason) wish to stay with older `MT` releases.
+
 This package is a bunch of patches for ``django-modeltranslation``
 (http://code.google.com/p/django-modeltranslation/,
 http://pypi.python.org/pypi/django-modeltranslation/),
